@@ -8,12 +8,13 @@
 
 int default_install(char *packagename) {
 	// Determine target
-	const char *target_dir = getenv("FBI_TARGET") ? getenv("FBI_TARGET") : "/usr/local/bin/";
-	const int target_dir_len = strlen(target_dir);
+	const char *target_dir = getenv("FBI_TARGET") ? getenv("FBI_TARGET") : "/usr/local/bin";
+	const int target_dir_len = strlen(target_dir) + 1;
 	const int packagename_len = strlen(packagename);
 	const int target_len = target_dir_len + packagename_len;
 	char *target = alloca(sizeof(char) * (target_len));
-	strncpy(target, target_dir, target_dir_len);
+	strncpy(target, target_dir, target_dir_len - 1);
+	target[target_dir_len - 1] = '/';
 	strncpy(target + target_dir_len, packagename, packagename_len);
 	target[target_len] = 0;
 
@@ -41,6 +42,9 @@ int default_install(char *packagename) {
 	close(wfd);
 	close(rfd);
 	free(buffer);
+	
+	// Remove intermediary file to free disk space
+	unlink(packagename);
 	
 	// Return
 	return (l == len);
