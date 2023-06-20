@@ -23,8 +23,8 @@ int default_install(char *packagename) {
 	int rfd = open(packagename, 0);
 	
 	// Read file size
-	long len = lseek(rfd, SEEK_END, 0);
-	lseek(rfd, SEEK_SET, 0);
+	long len = lseek(rfd, 0, SEEK_END);
+	lseek(rfd, 0, SEEK_SET);
 	
 	// Copy data
 	char *buffer = malloc(sizeof(char) * (1 << 16));
@@ -43,5 +43,5 @@ int default_install(char *packagename) {
 	free(buffer);
 	
 	// Return
-	return !(l < len);
+	return (l == len);
 }
