@@ -8,7 +8,7 @@
 
 int default_install(char *packagename) {
 	// Determine target
-	const char *target_dir = "/usr/local/bin/";
+	const char *target_dir = getenv("FBI_TARGET") ? getenv("FBI_TARGET") : "/usr/local/bin/";
 	const int target_dir_len = strlen(target_dir);
 	const int packagename_len = strlen(packagename);
 	const int target_len = target_dir_len + packagename_len;
