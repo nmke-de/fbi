@@ -12,7 +12,9 @@ int curl(const char *url) {
 		sysp((char * const*) cargs("curl", "-LO", url));
 		_exit(1);
 	}
-	if (waitpid(pid, 0, 0) == -1)
+	int wstatus;
+	waitpid(pid, &wstatus, 0);
+	if (WEXITSTATUS(wstatus) != 0)
 		return 0;
 	return 1;
 }
