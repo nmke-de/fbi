@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <alloca.h>
 #include <sys/sendfile.h>
+#include "print/print.h"
 
 #include "fbi.h"
 
@@ -12,9 +13,11 @@ int default_install(char *packagename) {
 	const int target_dir_len = strlen(target_dir);
 	const int packagename_len = strlen(packagename);
 	const int target_len = target_dir_len + packagename_len;
-	char *target = alloca(sizeof(char) * target_len);
+	char *target = alloca(sizeof(char) * (target_len));
 	strncpy(target, target_dir, target_dir_len);
 	strncpy(target + target_dir_len, packagename, packagename_len);
+	target[target_len] = 0;
+	logln(target);
 
 	int rfd = open(packagename, 0);
 	int wfd = open(target, O_CREAT | O_WRONLY, 0755);
@@ -24,7 +27,8 @@ int default_install(char *packagename) {
 	lseek(rfd, SEEK_SET, 0);
 	
 	// Copy data
-	sendfile(rfd, wfd, (off_t *)0, len);
+	if (sendfile(rfd, wfd, (off_t *)0, len) < 0)
+		return 0;
 	
 	// Close
 	close(wfd);
