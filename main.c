@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 	int (*install) (char *) = default_install;
 	
 	// Argparse
-	url = argv[1]; //temporary
+	url = argv[1] ? argv[1] : ""; //temporary
 	packagename = basename(url);
 	
 	// Fetch
