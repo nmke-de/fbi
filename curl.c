@@ -9,7 +9,7 @@ int curl(const char *url) {
 	if (pid < 0)
 		return 0;
 	else if (pid == 0) {
-		sysp(cargs("curl", "-LO", url));
+		sysp((char * const*) cargs("curl", "-LO", url));
 		_exit(1);
 	}
 	if (waitpid(pid, 0, 0) == -1)
