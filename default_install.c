@@ -43,8 +43,10 @@ int default_install(char *packagename) {
 	close(rfd);
 	free(buffer);
 	
-	// Remove intermediary file to free disk space
-	unlink(packagename);
+	// Remove intermediary file to free disk space, unless installed to current working directory
+	char cwd[1 << 10];
+	if (strcmp(getcwd(cwd, sizeof(cwd)), target_dir) != 0)
+		unlink(packagename);
 	
 	// Return
 	return (l == len);
