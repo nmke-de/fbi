@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
 		} else if (opt("-f")) {
+			// TODO fix
 			fetch = system;
 			custom_fetch = argv[++i];
 		} else if (opt("-b")) {
