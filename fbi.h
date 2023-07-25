@@ -21,4 +21,7 @@ int make(char *);
 // Install methods
 int make_install(char *);
 
+// Macros
+#define sysp(args) execvp(*(args), (args))
+
 #endif
