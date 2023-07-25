@@ -2,6 +2,7 @@
 #define FBI_H
 
 char *basename(char *);
+int copy(const char *, const char *);
 int curl(const char *);
 
 int default_build(char *);
