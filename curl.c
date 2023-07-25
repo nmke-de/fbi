@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include "print/print.h"
 
+#include "fbi.h"
+
 int curl(const char *url) {
 	pid_t pid = fork();
 	if (pid < 0)

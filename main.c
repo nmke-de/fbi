@@ -9,14 +9,13 @@
 
 int main(int argc, char **argv) {
 	char *url = "";
-	char *packagename;
 	int ok = 0;
 	int (*fetch) (char *) = default_fetch;
 	int (*build) (char *) = default_build;
 	int (*install) (char *) = default_install;
-	char *custom_fetch = "";
-	char *custom_build = "";
-	char *custom_install = "";
+	char *fetch_arg = NULL;
+	char *build_arg = NULL;
+	char *install_arg = NULL;
 	
 	// Argparse
 	for (int i = 1; i < argc; i++)
@@ -34,40 +33,43 @@ int main(int argc, char **argv) {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
 		} else if (opt("-f")) {
-			// TODO fix
-			fetch = system;
-			custom_fetch = argv[++i];
+			fetch = custom;
+			fetch_arg = argv[++i];
 		} else if (opt("-b")) {
-			build = system;
-			custom_build = argv[++i];
+			build = custom;
+			build_arg = argv[++i];
 		} else if (opt("-i")) {
-			install = system;
-			custom_build = argv[++i];
+			install = custom;
+			install_arg = argv[++i];
 		} else {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
 		}
-	// url = argv[1] ? argv[1] : ""; //temporary
-	packagename = basename(url);
+	if (fetch_arg == NULL)
+		fetch_arg = url;
+	if (build_arg == NULL)
+		build_arg = basename(url);
+	if (install_arg == NULL)
+		install_arg = build_arg;
 	
 	// Fetch
-	ok = fetch(url);
+	ok = fetch(fetch_arg);
 	if (!ok) {
-		logln("Error when fetching ", packagename, ".");
+		logln("Error when fetching ", fetch_arg, ".");
 		return 1;
 	}
 
 	// Build
-	ok = build(packagename);
+	ok = build(build_arg);
 	if (!ok) {
-		logln("Error when building ", packagename, ".");
+		logln("Error when building ", build_arg, ".");
 		return 2;
 	}
 	
 	// Install
-	ok = install(packagename);
+	ok = install(install_arg);
 	if (!ok) {
-		logln("Error when installing ", packagename, ".");
+		logln("Error when installing ", install_arg, ".");
 		return 3;
 	}
 	
