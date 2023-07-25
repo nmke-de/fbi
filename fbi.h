@@ -9,4 +9,6 @@ int default_build(char *);
 int default_fetch(char *);
 int default_install(char *);
 
+int git_clone(char *);
+
 #endif
