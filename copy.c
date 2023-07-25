@@ -36,10 +36,10 @@ int copy(const char *dst, const char *src) {
 	result = (l == len);
 	
 	// Close
+	free(buffer);
 close_files:
 	close(wfd);
 	close(rfd);
-	free(buffer);
 
 	// Return
 	return result;
