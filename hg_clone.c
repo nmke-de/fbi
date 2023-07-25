@@ -5,8 +5,6 @@
 
 #include "fbi.h"
 
-#define sysp(args) execvp(*(args), (args))
-
 int hg_clone(char *packagename) {
 	pid_t pid = fork();
 	if (pid < 0) {
