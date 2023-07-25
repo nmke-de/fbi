@@ -8,6 +8,11 @@
 #define opt(o) (strcmp(argv[i], o) == 0)
 
 int main(int argc, char **argv) {
+	if (argc == 1) {
+		logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
+		return -1;
+	}
+
 	char *url = "";
 	int ok = 0;
 	int (*fetch) (char *) = default_fetch;
