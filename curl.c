@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include "print/print.h"
 
-#define sysp(args) execvp(*(args), (args))
-
 int curl(const char *url) {
 	pid_t pid = fork();
 	if (pid < 0)
