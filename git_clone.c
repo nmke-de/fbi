@@ -11,7 +11,7 @@ int git_clone(char *packagename) {
 		logln("Could not spawn child process - exiting.");
 		_exit(1);
 	} else if (pid == 0) {
-		sysp((char * const*) cargs("git", "clone", packagename));
+		sysp((char * const*) cargs("git", "clone", "--recurse-submodules", packagename));
 		logln("Could not git clone ", packagename, " - exiting.");
 		_exit(2);
 	}
