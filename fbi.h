@@ -10,5 +10,6 @@ int default_fetch(char *);
 int default_install(char *);
 
 int git_clone(char *);
+int hg_clone(char *);
 
 #endif
