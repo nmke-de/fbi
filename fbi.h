@@ -5,6 +5,7 @@
 char *basename(char *);
 int copy(const char *, const char *);
 int curl(const char *);
+void go_to_work();
 
 // Custom - applicable for fetch, build and install. Not very secure.
 int custom(char *);

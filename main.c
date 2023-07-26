@@ -13,6 +13,9 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
+	// Change working directory
+	go_to_work();
+
 	char *url = "";
 	int ok = 0;
 	int (*fetch) (char *) = default_fetch;
@@ -21,6 +24,7 @@ int main(int argc, char **argv) {
 	char *fetch_arg = NULL;
 	char *build_arg = NULL;
 	char *install_arg = NULL;
+	char *registry_file = getenv("FBI_REGISTRY") ? getenv("FBI_REGISTRY") : "fbi_registry";
 	
 	// Argparse
 	for (int i = 1; i < argc; i++)
