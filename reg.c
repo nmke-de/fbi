@@ -12,7 +12,7 @@ void reg(const char *registry_file, list flags) {
 	for (int i = 0; i <= flags.len; i++) {
 		logln(flags.content[i]);
 		entry[i * 2] = flags.content[i];
-		entry[i * 2 + 1] = " ";
+		entry[i * 2 + 1] = "\t";
 	}
 	entry[flags.len * 2 + 1] = "\n";
 	entry[flags.len * 2 + 2] = (void *) 0;
