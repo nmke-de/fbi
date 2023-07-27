@@ -9,7 +9,7 @@
 /*
 update executes an update.
 */
-int update(char *registry_file) {
+int update(const char *registry_file) {
 	// TODO read file, parse, do the update
 	char *input = cat(registry_file);
 	char *url = "";
@@ -59,7 +59,6 @@ update_next:
 		} else if (input[i] == '\t') {
 			// Evaluate current field
 			input[i] = '\0';
-			logln(input + last_field_start);
 			if (input[last_field_start] != '-') 
 				url = input + last_field_start;
 			else if (opt("-git"))
