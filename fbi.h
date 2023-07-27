@@ -1,8 +1,9 @@
 #ifndef FBI_H
 #define FBI_H
 
-// List type
+#include <stddef.h>
 
+// List type
 typedef struct {
 	void **content;
 	int len;
@@ -15,6 +16,7 @@ void lfree(list *);
 
 // Auxiliaries
 char *basename(char *);
+char *cat(const char *);
 int copy(const char *, const char *);
 int curl(const char *);
 void go_to_work();
