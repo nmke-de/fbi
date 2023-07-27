@@ -6,6 +6,8 @@
 #include "fbi.h"
 
 int hg_pull(char *packagename) {
+	chdir(basename(packagename));
+	
 	pid_t pid = fork();
 	if (pid < 0) {
 		logln("Could not spawn child process - exiting.");
@@ -19,6 +21,7 @@ int hg_pull(char *packagename) {
 	// Wait
 	int wstatus;
 	waitpid(pid, &wstatus, 0);
+	go_to_work();
 	if (WEXITSTATUS(wstatus) != 0)
 		return 0;
 	return 1;
