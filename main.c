@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	
 	// Argparse
 	if (strcmp(argv[1], "update") == 0) {
-		return -1; //update(registry_file);
+		update(registry_file);
 	}
 	list flags = lnew(1);
 	for (int i = 1; i < argc; i++)

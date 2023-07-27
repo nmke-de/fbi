@@ -22,6 +22,8 @@ int curl(const char *);
 void go_to_work();
 void reg(const char *, list);
 
+int update(char *);
+
 // Custom - applicable for fetch, build and install. Not very secure.
 int custom(char *);
 

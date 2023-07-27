@@ -6,6 +6,8 @@
 #include "fbi.h"
 
 int hg_clone(char *packagename) {
+	chdir(basename(packagename));
+	
 	pid_t pid = fork();
 	if (pid < 0) {
 		logln("Could not spawn child process - exiting.");
