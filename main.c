@@ -24,32 +24,52 @@ int main(int argc, char **argv) {
 	char *fetch_arg = NULL;
 	char *build_arg = NULL;
 	char *install_arg = NULL;
-	char *registry_file = getenv("FBI_REGISTRY") ? getenv("FBI_REGISTRY") : "fbi_registry";
+	const char *registry_file = "fbi_registry";
 	
 	// Argparse
+	if (strcmp(argv[1], "update") == 0) {
+		return -1; //update(registry_file);
+	}
+	list flags = lnew(1);
 	for (int i = 1; i < argc; i++)
-		if (*(argv[i]) != '-')
+		if (*(argv[i]) != '-') {
 			url = argv[i];
-		else if (opt("-git"))
+			flags.content[0] = url;
+		}
+		else if (opt("-git")) {
 			fetch = git_clone;
-		else if (opt("-hg"))
+			lappend(&flags, argv[i]);
+		}
+		else if (opt("-hg")) {
 			fetch = hg_clone;
-		else if (opt("-make"))
+			lappend(&flags, argv[i]);
+		}
+		else if (opt("-make")) {
 			build = make;
-		else if (opt("-make-install"))
+			lappend(&flags, argv[i]);
+		}
+		else if (opt("-make-install")) {
 			install = make_install;
+			lappend(&flags, argv[i]);
+		}
 		else if (i + 1 == argc) {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
 		} else if (opt("-f")) {
 			fetch = custom;
+			lappend(&flags, argv[i]);
 			fetch_arg = argv[++i];
+			lappend(&flags, argv[i]);
 		} else if (opt("-b")) {
 			build = custom;
+			lappend(&flags, argv[i]);
 			build_arg = argv[++i];
+			lappend(&flags, argv[i]);
 		} else if (opt("-i")) {
 			install = custom;
+			lappend(&flags, argv[i]);
 			install_arg = argv[++i];
+			lappend(&flags, argv[i]);
 		} else {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
@@ -67,6 +87,10 @@ int main(int argc, char **argv) {
 		logln("Error when fetching ", fetch_arg, ".");
 		return 1;
 	}
+
+	// Register new entry
+	register(registry_file, flags);
+	lfree(&flags);
 
 	// Build
 	ok = build(build_arg);

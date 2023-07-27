@@ -1,6 +1,18 @@
 #ifndef FBI_H
 #define FBI_H
 
+// List type
+
+typedef struct {
+	void **content;
+	int len;
+	int cap;
+} list;
+
+list lnew(size_t);
+void lappend(list *, void *);
+void lfree(list *);
+
 // Auxiliaries
 char *basename(char *);
 int copy(const char *, const char *);
