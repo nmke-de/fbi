@@ -56,6 +56,7 @@ update_next:
 			fetch_arg = NULL;
 			build_arg = NULL;
 			install_arg = NULL;
+			last_field_start = i + 1;
 		} else if (input[i] == '\t') {
 			// Evaluate current field
 			input[i] = '\0';
@@ -69,6 +70,7 @@ update_next:
 				build = make;
 			else if (opt("-make-install"))
 				install = make_install;
+			// TODO the other options
 			last_field_start = i + 1;
 		} else continue;
 
