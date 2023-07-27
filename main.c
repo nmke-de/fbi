@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 	}
 
 	// Register new entry
-	register(registry_file, flags);
+	reg(registry_file, flags);
 	lfree(&flags);
 
 	// Build
