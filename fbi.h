@@ -30,6 +30,10 @@ int default_build(char *);
 int default_fetch(char *);
 int default_install(char *);
 
+// Update methods
+int git_pull(char *);
+int hg_pull(char *);
+
 // Fetch methods
 int git_clone(char *);
 int hg_clone(char *);
