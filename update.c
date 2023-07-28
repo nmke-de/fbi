@@ -31,7 +31,7 @@ int update(const char *registry_file) {
 			if (build_arg == NULL)
 				build_arg = basename(url);
 			if (install_arg == NULL)
-				install_arg = build_arg;	
+				install_arg = build_arg;
 
 			// Fetch
 			ok = fetch(fetch_arg);
