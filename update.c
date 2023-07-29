@@ -6,6 +6,13 @@
 
 #define opt(o) (strcmp(input + last_field_start, (o)) == 0)
 
+typedef enum {
+	_default,
+	arg_fetch,
+	arg_build,
+	arg_install
+} argparse_state; 
+
 /*
 update executes an update.
 */
@@ -20,6 +27,7 @@ int update(const char *registry_file) {
 	char *fetch_arg = NULL;
 	char *build_arg = NULL;
 	char *install_arg = NULL;
+	argparse_state s = _default;
 
 	// Loop
 	int last_field_start = 0;
@@ -28,21 +36,49 @@ int update(const char *registry_file) {
 			// Evaluate current field
 			char sep = input[i];
 			input[i] = '\0';
-			if (input[last_field_start] != '-') 
-				url = input + last_field_start;
-			else if (opt("-git"))
-				fetch = git_pull;
-			else if (opt("-hg"))
-				fetch = hg_pull;
-			else if (opt("-make"))
-				build = make;
-			else if (opt("-make-install"))
-				install = make_install;
-			// TODO the other options
+			switch (s) {
+				case arg_fetch:
+					fetch_arg = input + last_field_start;
+					s = _default;
+					break;
+				case arg_build:
+					build_arg = input + last_field_start;
+					s = _default;
+					break;
+				case arg_install:
+					install_arg = input + last_field_start;
+					s = _default;
+					break;
+				default:
+					if (input[last_field_start] != '-') 
+						url = input + last_field_start;
+					else if (opt("-git"))
+						fetch = git_pull;
+					else if (opt("-hg"))
+						fetch = hg_pull;
+					else if (opt("-make"))
+						build = make;
+					else if (opt("-make-install"))
+						install = make_install;
+					else if (opt("-f")) {
+						fetch = custom;
+						s = arg_fetch;
+					} else if (opt("-b")) {
+						build = custom;
+						s = arg_build;
+					} else if (opt("-i")) {
+						install = custom;
+						s = arg_install;
+					}
+			}
 			last_field_start = i + 1;
 
 			if (sep == '\t')
 				continue;
+			if (s != _default) {
+				logln("Error: invalid fbi options.");
+				goto update_next;
+			}
 			
 			// update on the entry
 			if (fetch_arg == NULL)
