@@ -23,8 +23,27 @@ int update(const char *registry_file) {
 
 	// Loop
 	int last_field_start = 0;
-	for (int i = 0; input[i] != '\0'; i++)
-		if (input[i] == '\n') {
+	for (int i = 0; input[i] != '\0'; i++) {
+		if (input[i] == '\t' || input[i] == '\n') {
+			// Evaluate current field
+			char sep = input[i];
+			input[i] = '\0';
+			if (input[last_field_start] != '-') 
+				url = input + last_field_start;
+			else if (opt("-git"))
+				fetch = git_pull;
+			else if (opt("-hg"))
+				fetch = hg_pull;
+			else if (opt("-make"))
+				build = make;
+			else if (opt("-make-install"))
+				install = make_install;
+			// TODO the other options
+			last_field_start = i + 1;
+
+			if (sep == '\t')
+				continue;
+			
 			// update on the entry
 			if (fetch_arg == NULL)
 				fetch_arg = url;
@@ -57,22 +76,8 @@ update_next:
 			build_arg = NULL;
 			install_arg = NULL;
 			last_field_start = i + 1;
-		} else if (input[i] == '\t') {
-			// Evaluate current field
-			input[i] = '\0';
-			if (input[last_field_start] != '-') 
-				url = input + last_field_start;
-			else if (opt("-git"))
-				fetch = git_pull;
-			else if (opt("-hg"))
-				fetch = hg_pull;
-			else if (opt("-make"))
-				build = make;
-			else if (opt("-make-install"))
-				install = make_install;
-			// TODO the other options
-			last_field_start = i + 1;
-		} else continue;
+		}
+	}
 
 	free(input);
 	return 0;
