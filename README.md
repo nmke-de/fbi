@@ -39,4 +39,6 @@ Type `make`. To install, type `sudo make install`. It is recommended to set the 
 
 ```bash
 fbi [|-git|-hg] [|-make] [|-make-install] <url>
+
+fbi update
 ```
