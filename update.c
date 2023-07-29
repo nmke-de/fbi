@@ -77,6 +77,7 @@ int update(const char *registry_file) {
 				continue;
 			if (s != _default) {
 				logln("Error: invalid fbi options.");
+				s = _default;
 				goto update_next;
 			}
 			
@@ -108,6 +109,9 @@ int update(const char *registry_file) {
 				logln("Error when installing ", install_arg, ".");
 			}
 update_next:
+			fetch = default_fetch;
+			build = default_build;
+			install = default_install;
 			fetch_arg = NULL;
 			build_arg = NULL;
 			install_arg = NULL;
