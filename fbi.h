@@ -15,6 +15,7 @@ void lappend(list *, void *);
 void lfree(list *);
 
 // Auxiliaries
+void assert(int, const char *);
 char *basename(char *);
 char *cat(const char *);
 int copy(const char *, const char *);
