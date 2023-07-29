@@ -37,4 +37,6 @@ Type `make`. To install, type `sudo make install`. It is recommended to set the 
 
 ## Usage
 
-[WIP]
+```bash
+fbi [|-git|-hg] [|-make] [|-make-install] <url>
+```
