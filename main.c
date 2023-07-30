@@ -52,6 +52,10 @@ int main(int argc, char **argv) {
 			build = make;
 			lappend(&flags, argv[i]);
 		}
+		else if (opt("-vlang")) {
+			build = vlang_build;
+			lappend(&flags, argv[i]);
+		}
 		else if (opt("-cd-install")) {
 			install = chdir_install;
 			lappend(&flags, argv[i]);
