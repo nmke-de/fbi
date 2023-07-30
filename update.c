@@ -56,8 +56,14 @@ int update(const char *registry_file) {
 						fetch = git_pull;
 					else if (opt("-hg"))
 						fetch = hg_pull;
+					else if (opt("-go"))
+						build = go_build;
 					else if (opt("-make"))
 						build = make;
+					else if (opt("-cd-install"))
+						install = chdir_install;
+					else if (opt("-go-install"))
+						install = go_install;
 					else if (opt("-make-install"))
 						install = make_install;
 					else if (opt("-f")) {
