@@ -14,6 +14,10 @@ As a consequence, the number of git repositories (and sometimes code from other 
 
 **F**etch, **B**uild and **I**nstall!
 
+## Security considerations
+
+If you use this, **be aware of what you install, from which sources!!!**
+
 ## Dependencies
 
 Hard dependencies:
@@ -37,8 +41,8 @@ Type `make`. To install, type `sudo make install`. It is recommended to set the 
 
 ## Usage
 
-```bash
-fbi [|-git|-hg] [|-make] [|-make-install] <url>
+```
+fbi [|-git|-hg|-f 'custom command'] [|-go|-make|-vlang|-b 'custom command'] [|-cd-install|-go-install|-make-install|-i 'custom command'] <url>
 
 fbi update
 ```
