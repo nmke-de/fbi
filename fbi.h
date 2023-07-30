@@ -42,9 +42,12 @@ int git_clone(char *);
 int hg_clone(char *);
 
 // Build methods
+int go_build(char *);
 int make(char *);
 
 // Install methods
+int chdir_install(char *);
+int go_install(char *);
 int make_install(char *);
 
 // Macros
