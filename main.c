@@ -44,8 +44,20 @@ int main(int argc, char **argv) {
 			fetch = hg_clone;
 			lappend(&flags, argv[i]);
 		}
+		else if (opt("-go")) {
+			build = go_build;
+			lappend(&flags, argv[i]);
+		}
 		else if (opt("-make")) {
 			build = make;
+			lappend(&flags, argv[i]);
+		}
+		else if (opt("-cd-install")) {
+			install = chdir_install;
+			lappend(&flags, argv[i]);
+		}
+		else if (opt("-go-install")) {
+			install = go_install;
 			lappend(&flags, argv[i]);
 		}
 		else if (opt("-make-install")) {
