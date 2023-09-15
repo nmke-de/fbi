@@ -5,8 +5,7 @@
 #include "fbi.h"
 
 void go_to_work() {
-	// TODO find a better default workplace than /tmp/fbi, preferrably in the HOME directory.
-	char *workplace = getenv("FBI_WORKPLACE") ? getenv("FBI_WORKPLACE") : "/tmp/fbi";
+	char *workplace = getenv("FBI_WORKPLACE") ? getenv("FBI_WORKPLACE") : "/opt/fbi";
 	mkdir(workplace, 0755);
 	chdir(workplace);
 }
