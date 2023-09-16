@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 	if (build_arg == NULL)
 		build_arg = basename(url);
 	if (install_arg == NULL)
-		install_arg = build_arg;
+		install_arg = basename(url);
 	
 	// Fetch
 	ok = fetch(fetch_arg);
