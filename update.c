@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 #include "print/print.h"
 
@@ -28,6 +30,7 @@ int update(const char *registry_file) {
 	char *build_arg = NULL;
 	char *install_arg = NULL;
 	argparse_state s = _default;
+	list cids = lnew(1);
 
 	// Loop
 	int last_field_start = 0;
@@ -97,24 +100,38 @@ int update(const char *registry_file) {
 			if (install_arg == NULL)
 				install_arg = basename(url);
 
-			// Fetch
-			ok = fetch(fetch_arg);
-			if (!ok) {
-				logln("Error when fetching ", fetch_arg, ".");
-				goto update_next;
-			}
+			logln("Forking...");
+			lappend(&cids, (void *) fork());
+			pid_t child = (pid_t) cids.content[cids.len];
+			if (child < 0) {
+				logln("Error when forking.");
+				return 1;
+			} else if (child == 0) {
+				// Fetch
+				ok = fetch(fetch_arg);
+				if (!ok) {
+					logln("Error when fetching ", fetch_arg, ".");
+					free(input);
+					_exit(1);
+				}
 
-			// Build
-			ok = build(build_arg);
-			if (!ok) {
-				logln("Error when building ", build_arg, ".");
-				goto update_next;
-			}
+				// Build
+				ok = build(build_arg);
+				if (!ok) {
+					logln("Error when building ", build_arg, ".");
+					free(input);
+					_exit(2);
+				}
 
-			// Install
-			ok = install(install_arg);
-			if (!ok) {
-				logln("Error when installing ", install_arg, ".");
+				// Install
+				ok = install(install_arg);
+				if (!ok) {
+					logln("Error when installing ", install_arg, ".");
+					free(input);
+					_exit(3);
+				}
+				free(input);
+				_exit(0);
 			}
 update_next:
 			fetch = default_fetch;
@@ -127,6 +144,13 @@ update_next:
 		}
 	}
 
+	for (int i = 0; i < cids.len; i++) {
+		int wstatus;
+		waitpid((pid_t) cids.content[i], &wstatus, 0);
+		if (WEXITSTATUS(wstatus) != 0) {
+			logln("An error occured during the update.");
+		}
+	}
 	free(input);
 	return 0;
 }
