@@ -143,7 +143,6 @@ int update(const char *registry_file) {
 				free(input);
 				_exit(0);
 			}
-			println("**", tasknames.content[tasknames.len], "<<");
 update_next:
 			fetch = default_fetch;
 			build = default_build;
