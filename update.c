@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 #include "print/print.h"
 
@@ -31,6 +32,8 @@ int update(const char *registry_file) {
 	char *install_arg = NULL;
 	argparse_state s = _default;
 	list cids = lnew(1);
+	list tasknames = lnew(1);
+	int nullfd = open("/dev/null", O_WRONLY); 
 
 	// Loop
 	int last_field_start = 0;
@@ -100,13 +103,20 @@ int update(const char *registry_file) {
 			if (install_arg == NULL)
 				install_arg = basename(url);
 
-			logln("Forking...");
+			logln("Updating ", url);
+			lappend(&tasknames, url);
 			lappend(&cids, (void *) fork());
 			pid_t child = (pid_t) cids.content[cids.len];
 			if (child < 0) {
 				logln("Error when forking.");
 				return 1;
 			} else if (child == 0) {
+				// Less noisy task
+				close(1);
+				close(2);
+				dup2(nullfd, 1);
+				dup2(nullfd, 2);
+
 				// Fetch
 				ok = fetch(fetch_arg);
 				if (!ok) {
@@ -143,12 +153,23 @@ update_next:
 			last_field_start = i + 1;
 		}
 	}
+	close(nullfd);
 
 	for (int i = 0; i < cids.len; i++) {
 		int wstatus;
 		waitpid((pid_t) cids.content[i], &wstatus, 0);
-		if (WEXITSTATUS(wstatus) != 0) {
-			logln("An error occured during the update.");
+		switch (WEXITSTATUS(wstatus)) {
+			case 1:
+				logln("Fetch error with ", tasknames.content[i]);
+				break;
+			case 2:
+				logln("Build error with ", tasknames.content[i]);
+				break;
+			case 3:
+				logln("Install error with ", tasknames.content[i]);
+				break;
+			default:
+				logln("Successfully updated ", tasknames.content[i]);
 		}
 	}
 	free(input);
