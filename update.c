@@ -116,11 +116,13 @@ int update(const char *registry_file) {
 				close(2);
 				dup2(nullfd, 1);
 				dup2(nullfd, 2);
+				close(nullfd);
+				lfree(&cids);
+				lfree(&tasknames);
 
 				// Fetch
 				ok = fetch(fetch_arg);
 				if (!ok) {
-					logln("Error when fetching ", fetch_arg, ".");
 					free(input);
 					_exit(1);
 				}
@@ -128,7 +130,6 @@ int update(const char *registry_file) {
 				// Build
 				ok = build(build_arg);
 				if (!ok) {
-					logln("Error when building ", build_arg, ".");
 					free(input);
 					_exit(2);
 				}
@@ -136,13 +137,13 @@ int update(const char *registry_file) {
 				// Install
 				ok = install(install_arg);
 				if (!ok) {
-					logln("Error when installing ", install_arg, ".");
 					free(input);
 					_exit(3);
 				}
 				free(input);
 				_exit(0);
 			}
+			println("**", tasknames.content[tasknames.len], "<<");
 update_next:
 			fetch = default_fetch;
 			build = default_build;
@@ -157,21 +158,24 @@ update_next:
 
 	for (int i = 0; i < cids.len; i++) {
 		int wstatus;
-		waitpid((pid_t) cids.content[i], &wstatus, 0);
+		waitpid((pid_t) cids.content[i + 1], &wstatus, 0);
 		switch (WEXITSTATUS(wstatus)) {
 			case 1:
-				logln("Fetch error with ", tasknames.content[i]);
+				logln("Fetch error with ", tasknames.content[i + 1]);
 				break;
 			case 2:
-				logln("Build error with ", tasknames.content[i]);
+				logln("Build error with ", tasknames.content[i + 1]);
 				break;
 			case 3:
-				logln("Install error with ", tasknames.content[i]);
+				logln("Install error with ", tasknames.content[i + 1]);
 				break;
 			default:
-				logln("Successfully updated ", tasknames.content[i]);
+				logln("Successfully updated ", tasknames.content[i + 1]);
 		}
 	}
+
 	free(input);
+	lfree(&cids);
+	lfree(&tasknames);
 	return 0;
 }
