@@ -1,4 +1,3 @@
-#include <alloca.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -6,15 +5,16 @@
 
 #include "fbi.h"
 
-void reg(const char *registry_file, list flags) {
+void reg(const char *registry_file, char **flags, int nflags) {
 	int fd = open(registry_file, O_WRONLY | O_APPEND | O_CREAT, 0644);
-	char **entry = alloca(sizeof(char *) * (flags.len * 2 + 1));
-	for (int i = 0; i <= flags.len; i++) {
-		entry[i * 2] = flags.content[i];
+	char *entry[nflags * 2 + 1];
+	for (int i = 0; i < nflags; i++) {
+		entry[i * 2] = flags[i];
 		entry[i * 2 + 1] = "\t";
 	}
-	entry[flags.len * 2 + 1] = "\n";
-	entry[flags.len * 2 + 2] = (void *) 0;
+	entry[nflags * 2 - 1] = "\n";
+	entry[nflags * 2] = (void *) 0;
+	fdprintv(2, (const char **) entry);
 	fdprintv(fd, (const char **) entry);
 	close(fd);
 }
