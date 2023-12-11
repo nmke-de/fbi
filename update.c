@@ -4,6 +4,7 @@
 #include <fcntl.h>
 
 #include "print/print.h"
+#include "Itoa/itoa.h"
 
 #include "fbi.h"
 
@@ -20,7 +21,6 @@ typedef enum {
 update executes an update.
 */
 int update(const char *registry_file) {
-	// TODO read file, parse, do the update
 	char *input = cat(registry_file);
 	char *url = "";
 	int (*fetch) (char *) = default_fetch;
@@ -31,9 +31,19 @@ int update(const char *registry_file) {
 	char *build_arg = NULL;
 	char *install_arg = NULL;
 	argparse_state s = _default;
-	list cids = lnew(1);
-	list tasknames = lnew(1);
-	int nullfd = open("/dev/null", O_WRONLY); 
+	int nullfd = open("/dev/null", O_WRONLY);
+	int task_count = 0;
+	int child_count = 0;
+
+	// First loop to count lines
+	int lc = 0;
+	for (int i = 0; input[i] != '\0'; i++)
+		if (input[i] == '\n')
+			++lc;
+	
+	// Allocate lists
+	pid_t cids[lc];
+	char *tasknames[lc];
 
 	// Loop
 	int last_field_start = 0;
@@ -104,9 +114,8 @@ int update(const char *registry_file) {
 				install_arg = basename(url);
 
 			logln("Updating ", url);
-			lappend(&tasknames, url);
-			lappend(&cids, (void *) fork());
-			pid_t child = (pid_t) cids.content[cids.len];
+			tasknames[task_count++] = url;
+			pid_t child = fork();
 			if (child < 0) {
 				logln("Error when forking.");
 				return 1;
@@ -117,8 +126,6 @@ int update(const char *registry_file) {
 				dup2(nullfd, 1);
 				dup2(nullfd, 2);
 				close(nullfd);
-				lfree(&cids);
-				lfree(&tasknames);
 
 				// Fetch
 				ok = fetch(fetch_arg);
@@ -143,6 +150,7 @@ int update(const char *registry_file) {
 				free(input);
 				_exit(0);
 			}
+			cids[child_count++] = child;
 update_next:
 			fetch = default_fetch;
 			build = default_build;
@@ -150,31 +158,31 @@ update_next:
 			fetch_arg = NULL;
 			build_arg = NULL;
 			install_arg = NULL;
-			last_field_start = i + 1;
 		}
 	}
 	close(nullfd);
 
-	for (int i = 0; i < cids.len; i++) {
+	for (int i = 0; i < lc; i++) {
 		int wstatus;
-		waitpid((pid_t) cids.content[i + 1], &wstatus, 0);
+		waitpid((pid_t) cids[i], &wstatus, 0);
 		switch (WEXITSTATUS(wstatus)) {
+			case 0:
+				logln("Successfully updated ", tasknames[i]);
+				break;
 			case 1:
-				logln("Fetch error with ", tasknames.content[i + 1]);
+				logln("Fetch error with ", tasknames[i]);
 				break;
 			case 2:
-				logln("Build error with ", tasknames.content[i + 1]);
+				logln("Build error with ", tasknames[i]);
 				break;
 			case 3:
-				logln("Install error with ", tasknames.content[i + 1]);
+				logln("Install error with ", tasknames[i]);
 				break;
 			default:
-				logln("Successfully updated ", tasknames.content[i + 1]);
+				logln("Unknown error ", itoa(WEXITSTATUS(wstatus), 10), " with ", tasknames[i]);
 		}
 	}
 
 	free(input);
-	lfree(&cids);
-	lfree(&tasknames);
 	return 0;
 }

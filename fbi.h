@@ -21,7 +21,7 @@ char *cat(const char *);
 int copy(const char *, const char *);
 int curl(const char *);
 void go_to_work();
-void reg(const char *, list);
+void reg(const char *, char **, int);
 
 int update(const char *);
 

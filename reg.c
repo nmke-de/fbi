@@ -14,7 +14,6 @@ void reg(const char *registry_file, char **flags, int nflags) {
 	}
 	entry[nflags * 2 - 1] = "\n";
 	entry[nflags * 2] = (void *) 0;
-	fdprintv(2, (const char **) entry);
 	fdprintv(fd, (const char **) entry);
 	close(fd);
 }
