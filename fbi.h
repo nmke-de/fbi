@@ -3,17 +3,6 @@
 
 #include <stddef.h>
 
-// List type
-typedef struct {
-	void **content;
-	int len;
-	int cap;
-} list;
-
-list lnew(size_t);
-void lappend(list *, void *);
-void lfree(list *);
-
 // Auxiliaries
 void assert(int, const char *);
 char *basename(char *);
