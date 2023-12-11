@@ -13,7 +13,7 @@ int git_pull(char *packagename) {
 		logln("Could not spawn child process - exiting.");
 		_exit(1);
 	} else if (pid == 0) {
-		sysp((char * const*) cargs("git", "pull", "--recurse-submodules", packagename));
+		sysp((char * const*) cargs("git", "pull", "--recurse-submodules"));
 		logln("Could not git pull ", packagename, " - exiting.");
 		_exit(2);
 	}

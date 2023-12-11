@@ -13,7 +13,7 @@ int hg_pull(char *packagename) {
 		logln("Could not spawn child process - exiting.");
 		_exit(1);
 	} else if (pid == 0) {
-		sysp((char * const*) cargs("hg", "pull", packagename));
+		sysp((char * const*) cargs("hg", "pull"));
 		logln("Could not hg pull ", packagename, " - exiting.");
 		_exit(2);
 	}
