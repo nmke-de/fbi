@@ -18,8 +18,7 @@ typedef enum {
 } argparse_state; 
 
 // Free/idle "worker threads"
-#define NPROC 10
-int idle = NPROC;
+int idle = 0;
 int task_success[5];
 void free_task(int sig) {
 	int wstatus;
@@ -36,6 +35,11 @@ void free_task(int sig) {
 update executes an update.
 */
 int update(const char *registry_file) {
+	// Amount of child processes
+	long nproc = getenv("FBI_NPROC") ? atol(getenv("FBI_NPROC")) : sysconf(_SC_NPROCESSORS_ONLN);
+	if (nproc < 1)
+		nproc = 1;
+	idle = nproc;
 	char *input = cat(registry_file);
 	char *url = "";
 	int (*fetch) (char *) = default_fetch;
@@ -177,7 +181,7 @@ update_next:
 	close(nullfd);
 
 	// Wait for all child processes to end
-	while (idle != NPROC) {}
+	while (idle != nproc) {}
 
 	char suc[21], fet[21], bld[21], inst[21], idk[21];
 	logln(strncpy(suc, itoa(task_success[0], 10), 21), " successful updates, ", strncpy(fet, itoa(task_success[1], 10), 21), " fetch errors, ", strncpy(bld, itoa(task_success[2], 10), 21), " build errors, ", strncpy(inst, itoa(task_success[3], 10), 21), " install errors and ", strncpy(idk, itoa(task_success[4], 10), 21), " unknown errors.");
