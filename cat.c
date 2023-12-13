@@ -18,7 +18,7 @@ char *cat(const char *filename) {
 	while (rl == chunksize) {
 		cap += rl;
 		input = realloc(input, sizeof(char) * cap);
-		rl = read(fd, input, chunksize);
+		rl = read(fd, input + cap - rl, chunksize);
 	}
 	close (fd);
 	// debug(input);
