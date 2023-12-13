@@ -18,7 +18,7 @@ typedef enum {
 } argparse_state; 
 
 // Free/idle "worker threads"
-int idle = 0;
+static volatile int idle = 0;
 int task_success[5];
 void free_task(int sig) {
 	int wstatus;
@@ -53,9 +53,10 @@ int update(const char *registry_file) {
 	int nullfd = open("/dev/null", O_WRONLY);
 
 	// Loop
-	signal(SIGCLD, free_task);
+	signal(SIGCHLD, free_task);
 	int last_field_start = 0;
-	for (int i = 0; input[i] != '\0'; i++) {
+	long leninput = strlen(input);
+	for (int i = 0; i < leninput; i++) {
 		if (input[i] == '\t' || input[i] == '\n') {
 			// Evaluate current field
 			char sep = input[i];
@@ -164,7 +165,8 @@ int update(const char *registry_file) {
 					close(logfd);
 					_exit(3);
 				}
-				free(input);
+				
+				// free(input);
 				fdprintv(logfd, cargs("Successfully updated ", url, "\n"));
 				close(logfd);
 				_exit(0);
