@@ -17,6 +17,21 @@ typedef enum {
 	arg_install
 } argparse_state; 
 
+// Free/idle "worker threads"
+#define NPROC 10
+int idle = NPROC;
+int task_success[5];
+void free_task(int sig) {
+	int wstatus;
+	pid_t dead = wait(&wstatus);
+	++idle;
+
+	if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) < 4)
+		task_success[WEXITSTATUS(wstatus)] += 1;
+	else
+		task_success[4] += 1;
+}
+
 /*
 update executes an update.
 */
@@ -32,20 +47,9 @@ int update(const char *registry_file) {
 	char *install_arg = NULL;
 	argparse_state s = _default;
 	int nullfd = open("/dev/null", O_WRONLY);
-	int task_count = 0;
-	int child_count = 0;
-
-	// First loop to count lines
-	int lc = 0;
-	for (int i = 0; input[i] != '\0'; i++)
-		if (input[i] == '\n')
-			++lc;
-	
-	// Allocate lists
-	pid_t cids[lc];
-	char *tasknames[lc];
 
 	// Loop
+	signal(SIGCLD, free_task);
 	int last_field_start = 0;
 	for (int i = 0; input[i] != '\0'; i++) {
 		if (input[i] == '\t' || input[i] == '\n') {
@@ -113,14 +117,17 @@ int update(const char *registry_file) {
 			if (install_arg == NULL)
 				install_arg = basename(url);
 
+			while (idle == 0) {}
+			--idle;
+
 			logln("Updating ", url);
-			tasknames[task_count++] = url;
 			pid_t child = fork();
 			if (child < 0) {
 				logln("Error when forking.");
 				return 1;
 			} else if (child == 0) {
 				// Less noisy task
+				int logfd = dup(2);
 				close(1);
 				close(2);
 				dup2(nullfd, 1);
@@ -131,6 +138,8 @@ int update(const char *registry_file) {
 				ok = fetch(fetch_arg);
 				if (!ok) {
 					free(input);
+					fdprintv(logfd, cargs("Fetch error with ", url, "\n"));
+					close(logfd);
 					_exit(1);
 				}
 
@@ -138,6 +147,8 @@ int update(const char *registry_file) {
 				ok = build(build_arg);
 				if (!ok) {
 					free(input);
+					fdprintv(logfd, cargs("Build error with ", url, "\n"));
+					close(logfd);
 					_exit(2);
 				}
 
@@ -145,12 +156,15 @@ int update(const char *registry_file) {
 				ok = install(install_arg);
 				if (!ok) {
 					free(input);
+					fdprintv(logfd, cargs("Install error with ", url, "\n"));
+					close(logfd);
 					_exit(3);
 				}
 				free(input);
+				fdprintv(logfd, cargs("Successfully updated ", url, "\n"));
+				close(logfd);
 				_exit(0);
 			}
-			cids[child_count++] = child;
 update_next:
 			fetch = default_fetch;
 			build = default_build;
@@ -162,26 +176,11 @@ update_next:
 	}
 	close(nullfd);
 
-	for (int i = 0; i < lc; i++) {
-		int wstatus;
-		waitpid((pid_t) cids[i], &wstatus, 0);
-		switch (WEXITSTATUS(wstatus)) {
-			case 0:
-				logln("Successfully updated ", tasknames[i]);
-				break;
-			case 1:
-				logln("Fetch error with ", tasknames[i]);
-				break;
-			case 2:
-				logln("Build error with ", tasknames[i]);
-				break;
-			case 3:
-				logln("Install error with ", tasknames[i]);
-				break;
-			default:
-				logln("Unknown error ", itoa(WEXITSTATUS(wstatus), 10), " with ", tasknames[i]);
-		}
-	}
+	// Wait for all child processes to end
+	while (idle != NPROC) {}
+
+	char suc[21], fet[21], bld[21], inst[21], idk[21];
+	logln(strncpy(suc, itoa(task_success[0], 10), 21), " successful updates, ", strncpy(fet, itoa(task_success[1], 10), 21), " fetch errors, ", strncpy(bld, itoa(task_success[2], 10), 21), " build errors, ", strncpy(inst, itoa(task_success[3], 10), 21), " install errors and ", strncpy(idk, itoa(task_success[4], 10), 21), " unknown errors.");
 
 	free(input);
 	return 0;
