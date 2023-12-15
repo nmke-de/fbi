@@ -3,8 +3,9 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-#include "print/print.h"
 #include "Itoa/itoa.h"
+
+#include "fbi.h"
 
 #define opt(o) (strcmp(input + last_field_start, (o)) == 0)
 
