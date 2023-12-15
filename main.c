@@ -106,6 +106,7 @@ int main(int argc, char **argv) {
 		logln("Error when fetching ", fetch_arg, ".");
 		return 1;
 	}
+	go_to_work();
 
 	// Register new entry
 	reg(registry_file, flags, next_empty + 1);
@@ -117,6 +118,7 @@ int main(int argc, char **argv) {
 		logln("Error when building ", build_arg, ".");
 		return 2;
 	}
+	go_to_work();
 	
 	// Install
 	ok = install(install_arg);

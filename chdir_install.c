@@ -29,8 +29,6 @@ int chdir_install(char *packagename) {
 	if (strcmp(getcwd(cwd, sizeof(cwd)), target_dir) != 0)
 		unlink(packagename);
 	
-	go_to_work();
-	
 	// Return
 	return result;
 }

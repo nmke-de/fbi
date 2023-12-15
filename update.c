@@ -147,6 +147,7 @@ int update(const char *registry_file) {
 					close(logfd);
 					_exit(1);
 				}
+				go_to_work();
 
 				// Build
 				ok = build(build_arg);
@@ -156,6 +157,7 @@ int update(const char *registry_file) {
 					close(logfd);
 					_exit(2);
 				}
+				go_to_work();
 
 				// Install
 				ok = install(install_arg);

@@ -21,7 +21,6 @@ int make_install(char *packagename) {
 	// Wait
 	int wstatus;
 	waitpid(pid, &wstatus, 0);
-	go_to_work();
 	if (WEXITSTATUS(wstatus) != 0)
 		return 0;
 	return 1;
