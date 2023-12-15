@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "print/print.h"
+
 #include "fbi.h"
 /*
 Copy file at src to dst. Returns 1 if successful, 0 if not.

@@ -1,8 +1,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "print/print.h"
-
 #include "fbi.h"
 
 void reg(const char *registry_file, char **flags, int nflags) {

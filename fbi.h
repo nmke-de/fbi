@@ -2,6 +2,7 @@
 #define FBI_H
 
 #include <stddef.h>
+#include "print/print.h"
 
 // Auxiliaries
 void assert(int, const char *);
@@ -11,6 +12,7 @@ int copy(const char *, const char *);
 int curl(const char *);
 void go_to_work();
 void reg(const char *, char **, int);
+int sysdo_internal(char * const *args);
 
 int update(const char *);
 
@@ -42,5 +44,6 @@ int make_install(char *);
 
 // Macros
 #define sysp(args) execvp(*(args), (args))
+#define sysdo(...) sysdo_internal((char * const*) cargs(__VA_ARGS__))
 
 #endif

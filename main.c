@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "print/print.h"
 
 #include "fbi.h"
 
