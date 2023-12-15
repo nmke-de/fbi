@@ -41,8 +41,19 @@ Type `make`. To install, type `sudo make install`. It is recommended to set the 
 
 ## Usage
 
-```
-fbi [|-git|-hg|-f 'custom command'] [|-go|-make|-vlang|-b 'custom command'] [|-cd-install|-go-install|-make-install|-i 'custom command'] <url>
+```bash
+fbi [OPTIONS] <url>
+# where OPTIONS includes the following:
+#
+# FETCH OPTIONS:
+[|-git|-hg|-f 'custom command']
+#
+# BUILD OPTIONS:
+[|-go|-make|-vlang|-b 'custom command']
+#
+# INSTALL OPTIONS:
+[|-cd-install|-go-install|-make-install|-i 'custom command']
 
+# alternatively, to update, this:
 fbi update
 ```
