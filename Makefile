@@ -1,4 +1,4 @@
-INPUT = *.c print/libprint.a Itoa/itoa.o
+INPUT = src/*.c print/libprint.a Itoa/itoa.o
 
 fbi: $(INPUT)
 	$(CC) -o fbi $(INPUT)
