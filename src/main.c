@@ -18,14 +18,14 @@ int main(int argc, char **argv) {
 
 	char *url = "";
 	int ok = 0;
-	int (*fetch) (char *) = default_fetch;
-	int (*build) (char *) = default_build;
-	int (*install) (char *) = default_install;
+	int (*fetch)(char *) = default_fetch;
+	int (*build)(char *) = default_build;
+	int (*install)(char *) = default_install;
 	char *fetch_arg = NULL;
 	char *build_arg = NULL;
 	char *install_arg = NULL;
 	const char *registry_file = "fbi_registry";
-	
+
 	// Argparse
 	if (strcmp(argv[1], "update") == 0) {
 		return update(registry_file);
@@ -37,40 +37,31 @@ int main(int argc, char **argv) {
 		if (*(argv[i]) != '-') {
 			url = argv[i];
 			flags[0] = url;
-		}
-		else if (opt("-git")) {
+		} else if (opt("-git")) {
 			fetch = git_clone;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-hg")) {
+		} else if (opt("-hg")) {
 			fetch = hg_clone;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-go")) {
+		} else if (opt("-go")) {
 			build = go_build;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-make")) {
+		} else if (opt("-make")) {
 			build = make;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-vlang")) {
+		} else if (opt("-vlang")) {
 			build = vlang_build;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-cd-install")) {
+		} else if (opt("-cd-install")) {
 			install = chdir_install;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-go-install")) {
+		} else if (opt("-go-install")) {
 			install = go_install;
 			lappend(flags, argv[i]);
-		}
-		else if (opt("-make-install")) {
+		} else if (opt("-make-install")) {
 			install = make_install;
 			lappend(flags, argv[i]);
-		}
-		else if (i + 1 == argc) {
+		} else if (i + 1 == argc) {
 			logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
 			return -1;
 		} else if (opt("-f")) {
@@ -98,7 +89,7 @@ int main(int argc, char **argv) {
 		build_arg = basename(url);
 	if (install_arg == NULL)
 		install_arg = basename(url);
-	
+
 	// Fetch
 	ok = fetch(fetch_arg);
 	if (!ok) {
@@ -118,13 +109,13 @@ int main(int argc, char **argv) {
 		return 2;
 	}
 	go_to_work();
-	
+
 	// Install
 	ok = install(install_arg);
 	if (!ok) {
 		logln("Error when installing ", install_arg, ".");
 		return 3;
 	}
-	
+
 	return 0;
 }

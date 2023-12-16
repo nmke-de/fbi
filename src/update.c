@@ -14,7 +14,7 @@ typedef enum {
 	arg_fetch,
 	arg_build,
 	arg_install
-} argparse_state; 
+} argparse_state;
 
 // Free/idle "worker threads"
 static volatile int idle = 0;
@@ -41,9 +41,9 @@ int update(const char *registry_file) {
 	idle = nproc;
 	char *input = cat(registry_file);
 	char *url = "";
-	int (*fetch) (char *) = default_fetch;
-	int (*build) (char *) = default_build;
-	int (*install) (char *) = default_install;
+	int (*fetch)(char *) = default_fetch;
+	int (*build)(char *) = default_build;
+	int (*install)(char *) = default_install;
 	int ok = 0;
 	char *fetch_arg = NULL;
 	char *build_arg = NULL;
@@ -74,7 +74,7 @@ int update(const char *registry_file) {
 					s = _default;
 					break;
 				default:
-					if (input[last_field_start] != '-') 
+					if (input[last_field_start] != '-')
 						url = input + last_field_start;
 					else if (opt("-git"))
 						fetch = git_pull;
@@ -112,7 +112,7 @@ int update(const char *registry_file) {
 				s = _default;
 				goto update_next;
 			}
-			
+
 			// update on the entry
 			if (fetch_arg == NULL)
 				fetch_arg = url;
@@ -121,7 +121,8 @@ int update(const char *registry_file) {
 			if (install_arg == NULL)
 				install_arg = basename(url);
 
-			while (idle == 0) {}
+			while (idle == 0) {
+			}
 			--idle;
 
 			logln("Updating ", url);
@@ -166,13 +167,13 @@ int update(const char *registry_file) {
 					close(logfd);
 					_exit(3);
 				}
-				
+
 				// free(input);
 				fdprintv(logfd, cargs("Successfully updated ", url, "\n"));
 				close(logfd);
 				_exit(0);
 			}
-update_next:
+		update_next:
 			fetch = default_fetch;
 			build = default_build;
 			install = default_install;
@@ -184,7 +185,8 @@ update_next:
 	close(nullfd);
 
 	// Wait for all child processes to end
-	while (idle != nproc) {}
+	while (idle != nproc) {
+	}
 
 	char suc[21], fet[21], bld[21], inst[21], idk[21];
 	logln(strncpy(suc, itoa(task_success[0], 10), 21), " successful updates, ", strncpy(fet, itoa(task_success[1], 10), 21), " fetch errors, ", strncpy(bld, itoa(task_success[2], 10), 21), " build errors, ", strncpy(inst, itoa(task_success[3], 10), 21), " install errors and ", strncpy(idk, itoa(task_success[4], 10), 21), " unknown errors.");

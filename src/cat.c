@@ -20,7 +20,7 @@ char *cat(const char *filename) {
 		input = realloc(input, sizeof(char) * cap);
 		rl = read(fd, input + cap - rl, chunksize);
 	}
-	close (fd);
+	close(fd);
 	// debug(input);
 	return input;
 }

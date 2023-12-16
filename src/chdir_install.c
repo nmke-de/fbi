@@ -23,12 +23,12 @@ int chdir_install(char *packagename) {
 
 	// Copy file
 	int result = copy(target, packagename);
-	
+
 	// Remove intermediary file to free disk space, unless installed to current working directory
 	char cwd[1 << 10];
 	if (strcmp(getcwd(cwd, sizeof(cwd)), target_dir) != 0)
 		unlink(packagename);
-	
+
 	// Return
 	return result;
 }

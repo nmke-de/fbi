@@ -5,7 +5,7 @@
 
 #include "fbi.h"
 
-int sysdo_internal (char * const *args) {
+int sysdo_internal(char *const *args) {
 	pid_t pid = fork();
 	if (pid < 0) {
 		logln("Could not spawn child process `", *args, "` - exiting.");

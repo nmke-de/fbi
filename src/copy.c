@@ -14,11 +14,11 @@ int copy(const char *dst, const char *src) {
 		result = 0;
 		goto close_files;
 	}
-	
+
 	// Read file size
 	long len = lseek(rfd, 0, SEEK_END);
 	lseek(rfd, 0, SEEK_SET);
-	
+
 	// Copy data
 	char *buffer = malloc(sizeof(char) * (1 << 16));
 	if (buffer == NULL)
@@ -34,7 +34,7 @@ int copy(const char *dst, const char *src) {
 
 	// Check read / written length
 	result = (l == len);
-	
+
 	// Close
 	free(buffer);
 close_files:
