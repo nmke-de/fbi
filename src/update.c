@@ -190,5 +190,5 @@ update_next:
 	logln(strncpy(suc, itoa(task_success[0], 10), 21), " successful updates, ", strncpy(fet, itoa(task_success[1], 10), 21), " fetch errors, ", strncpy(bld, itoa(task_success[2], 10), 21), " build errors, ", strncpy(inst, itoa(task_success[3], 10), 21), " install errors and ", strncpy(idk, itoa(task_success[4], 10), 21), " unknown errors.");
 
 	free(input);
-	return 0;
+	return !(task_success[1] + task_success[2] + task_success[3] + task_success[4]);
 }
