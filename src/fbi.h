@@ -35,7 +35,9 @@ int hg_clone(char *);
 // Build methods
 int go_build(char *);
 int make(char *);
+int tar(char *);
 int vlang_build(char *);
+int zip(char *);
 
 // Install methods
 int chdir_install(char *);

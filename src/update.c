@@ -84,8 +84,12 @@ int update(const char *registry_file) {
 						build = go_build;
 					else if (opt("-make"))
 						build = make;
+					else if (opt("-tar"))
+						build = tar;
 					else if (opt("-vlang"))
 						build = vlang_build;
+					else if (opt("-zip"))
+						build = zip;
 					else if (opt("-cd-install"))
 						install = chdir_install;
 					else if (opt("-go-install"))

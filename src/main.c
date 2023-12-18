@@ -49,8 +49,14 @@ int main(int argc, char **argv) {
 		} else if (opt("-make")) {
 			build = make;
 			lappend(flags, argv[i]);
+		} else if (opt("-tar")) {
+			build = tar;
+			lappend(flags, argv[i]);
 		} else if (opt("-vlang")) {
 			build = vlang_build;
+			lappend(flags, argv[i]);
+		} else if (opt("-zip")) {
+			build = zip;
 			lappend(flags, argv[i]);
 		} else if (opt("-cd-install")) {
 			install = chdir_install;
