@@ -14,6 +14,7 @@ void go_to_work();
 void reg(const char *, char **, int);
 int sysdo_internal(char *const *args);
 
+int help(char *);
 int update(const char *);
 
 // Custom - applicable for fetch, build and install. Not very secure.

@@ -9,8 +9,7 @@
 
 int main(int argc, char **argv) {
 	if (argc == 1) {
-		logln("Syntax: ", basename(argv[0]), " [OPTIONS] <url>");
-		return -1;
+		return help("");
 	}
 
 	// Change working directory
@@ -29,6 +28,8 @@ int main(int argc, char **argv) {
 	// Argparse
 	if (strcmp(argv[1], "update") == 0) {
 		return update(registry_file);
+	} else if (strcmp(argv[1], "help") == 0) {
+		return help(argc >= 3 ? argv[2] : "");
 	}
 	// list flags = lnew(1);
 	char *flags[argc];
