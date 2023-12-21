@@ -11,6 +11,8 @@ Itoa/itoa.o:
 
 clean:
 	rm -rf *.o fbi
+	make clean -C print
+	make clean -C Itoa
 
 install: fbi
 	install fbi /usr/local/bin
