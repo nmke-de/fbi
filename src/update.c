@@ -129,7 +129,7 @@ int update(const char *registry_file) {
 			}
 			--idle;
 
-			logln("Updating ", url);
+			logln("  Updating ", url);
 			pid_t child = fork();
 			if (child < 0) {
 				logln("Error when forking.");
@@ -147,7 +147,7 @@ int update(const char *registry_file) {
 				ok = fetch(fetch_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("Fetch error with ", url, "\n"));
+					fdprintv(logfd, cargs("L Fetch error with ", url, "\n"));
 					close(logfd);
 					_exit(1);
 				}
@@ -157,7 +157,7 @@ int update(const char *registry_file) {
 				ok = build(build_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("Build error with ", url, "\n"));
+					fdprintv(logfd, cargs("L Build error with ", url, "\n"));
 					close(logfd);
 					_exit(2);
 				}
@@ -167,13 +167,13 @@ int update(const char *registry_file) {
 				ok = install(install_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("Install error with ", url, "\n"));
+					fdprintv(logfd, cargs("L Install error with ", url, "\n"));
 					close(logfd);
 					_exit(3);
 				}
 
 				// free(input);
-				fdprintv(logfd, cargs("Successfully updated ", url, "\n"));
+				fdprintv(logfd, cargs("  Successfully updated ", url, "\n"));
 				close(logfd);
 				_exit(0);
 			}

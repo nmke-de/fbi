@@ -1,5 +1,6 @@
 #include "fbi.h"
 
 int curl(const char *url) {
-	return sysdo("curl", "-LO", url);
+	logln("curl -sLO ", url);
+	return sysdo("curl", "-sLO", url);
 }
