@@ -14,12 +14,12 @@ update";
 	if (opt("environ")) {
 		println("fbi environment variables\n\
 FBI_NPROC\tdetermines the maximum amount of parallel processes run by `fbi\n\
-update`. By default, this is $(nproc).\n\
+\t\tupdate`. By default, this is $(nproc).\n\
 FBI_TARGET\tinfluences the location where fbi installs binaries to, using\n\
-default installation or the -cd-install flag. By default, this is\n\
-`/usr/local/bin`.\n\
+\t\tdefault installation or the -cd-install flag. By default, this is\n\
+\t\t`/usr/local/bin`.\n\
 FBI_WORKPLACE\tdetermines the working directory of fbi. By default, this is\n\
-`/opt/fbi`.",
+\t\t`/opt/fbi`.",
 			valid_topics);
 	} else if (opt("help")) {
 		println("fbi help\n\
@@ -43,7 +43,7 @@ default: -b 'chmod 0755 <packagename>'\n\
 \n\
 INSTALL OPTIONS\n\
 -cd-install\tInstall the binary at $FBI_WORKPLACE/<packagename>/<packagename>\n\
-\t to $FBI_TARGET/<packagename>\n\
+\t\tto $FBI_TARGET/<packagename>\n\
 -go-install\tUse `go install`\n\
 -make-install\tCall `make install` in the package directory.\n\
 -i <cmds>\tExecute <cmds> in a shell.\n\
