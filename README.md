@@ -37,6 +37,8 @@ Dependencies which are, in theory, optional, but recommended:
 
 ## Build
 
+Make sure to fetch the git submodules. Do this with `git submodule update --init --remote`.
+
 Type `make`. To install, type `sudo make install`. It is recommended to set the `FBI_WORKPLACE` environment variable.
 
 ## Usage
