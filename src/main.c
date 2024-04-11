@@ -47,6 +47,9 @@ int main(int argc, char **argv) {
 		} else if (opt("-go")) {
 			build = go_build;
 			lappend(flags, argv[i]);
+		} else if (opt("-haredo")) {
+			build = haredo;
+			lappend(flags, argv[i]);
 		} else if (opt("-make")) {
 			build = make;
 			lappend(flags, argv[i]);
@@ -64,6 +67,9 @@ int main(int argc, char **argv) {
 			lappend(flags, argv[i]);
 		} else if (opt("-go-install")) {
 			install = go_install;
+			lappend(flags, argv[i]);
+		} else if (opt("-haredo-install")) {
+			install = haredo_install;
 			lappend(flags, argv[i]);
 		} else if (opt("-make-install")) {
 			install = make_install;

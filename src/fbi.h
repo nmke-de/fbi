@@ -35,6 +35,7 @@ int hg_clone(char *);
 
 // Build methods
 int go_build(char *);
+int haredo(char *);
 int make(char *);
 int tar(char *);
 int vlang_build(char *);
@@ -43,6 +44,7 @@ int zip(char *);
 // Install methods
 int chdir_install(char *);
 int go_install(char *);
+int haredo_install(char *);
 int make_install(char *);
 
 // Macros
