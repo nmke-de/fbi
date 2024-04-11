@@ -34,6 +34,7 @@ default: -f 'curl <url>'\n\
 \n\
 BUILD OPTIONS\n\
 -go\tUse go build system\n\
+-haredo\tCall `haredo` in package directory\n\
 -make\tCall `make` in package directory\n\
 -tar\tExtract tar archive\n\
 -vlang\tUse vlang build system\n\
@@ -45,6 +46,7 @@ INSTALL OPTIONS\n\
 -cd-install\tInstall the binary at $FBI_WORKPLACE/<packagename>/<packagename>\n\
 \t\tto $FBI_TARGET/<packagename>\n\
 -go-install\tUse `go install`\n\
+-haredo-install\tCall `haredo install` in the package directory.\n\
 -make-install\tCall `make install` in the package directory.\n\
 -i <cmds>\tExecute <cmds> in a shell.\n\
 default: -i 'mv <packagename> $FBI_TARGET/<packagename>'",

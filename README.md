@@ -51,10 +51,10 @@ fbi [OPTIONS] <url>
 [|-git|-hg|-f 'custom command']
 #
 # BUILD OPTIONS:
-[|-go|-make|-vlang|-b 'custom command']
+[|-go|-haredo|-make|-vlang|-b 'custom command']
 #
 # INSTALL OPTIONS:
-[|-cd-install|-go-install|-make-install|-i 'custom command']
+[|-cd-install|-go-install|-haredo-install|-make-install|-i 'custom command']
 
 # alternatively, to update, this:
 fbi update
