@@ -51,10 +51,20 @@ int update(const char *registry_file) {
 	argparse_state s = _default;
 	int nullfd = open("/dev/null", O_WRONLY);
 
+	// Count update tasks
+	long leninput = strlen(input);
+	int task_count_max = 0;
+	for (int i = 0; i < leninput; i++)
+		if (input[i] == '\n')
+			++task_count_max;
+	// Convert task_count_max to string
+	char tcm[21];
+	strncpy(tcm, itoa(task_count_max, 10), 21);
+
 	// Loop
 	signal(SIGCHLD, free_task);
 	int last_field_start = 0;
-	long leninput = strlen(input);
+	int task_count = 0;
 	for (int i = 0; i < leninput; i++) {
 		if (input[i] == '\t' || input[i] == '\n') {
 			// Evaluate current field
@@ -133,7 +143,7 @@ int update(const char *registry_file) {
 			}
 			--idle;
 
-			logln("  Updating ", url);
+			logln("  (", itoa(++task_count, 10), "/", tcm, ") Updating ", url);
 			pid_t child = fork();
 			if (child < 0) {
 				logln("Error when forking.");
@@ -151,7 +161,7 @@ int update(const char *registry_file) {
 				ok = fetch(fetch_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("L Fetch error with ", url, "\n"));
+					fdprintv(logfd, cargs("L (", itoa(task_count, 10), "/", tcm, ") Fetch error with ", url, "\n"));
 					close(logfd);
 					_exit(1);
 				}
@@ -161,7 +171,7 @@ int update(const char *registry_file) {
 				ok = build(build_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("L Build error with ", url, "\n"));
+					fdprintv(logfd, cargs("L (", itoa(task_count, 10), "/", tcm, ") Build error with ", url, "\n"));
 					close(logfd);
 					_exit(2);
 				}
@@ -171,13 +181,13 @@ int update(const char *registry_file) {
 				ok = install(install_arg);
 				if (!ok) {
 					free(input);
-					fdprintv(logfd, cargs("L Install error with ", url, "\n"));
+					fdprintv(logfd, cargs("L (", itoa(task_count, 10), "/", tcm, ") Install error with ", url, "\n"));
 					close(logfd);
 					_exit(3);
 				}
 
 				// free(input);
-				fdprintv(logfd, cargs("  Successfully updated ", url, "\n"));
+				fdprintv(logfd, cargs("  (", itoa(task_count, 10), "/", tcm, ") Successfully updated ", url, "\n"));
 				close(logfd);
 				_exit(0);
 			}
